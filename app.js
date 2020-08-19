@@ -1,12 +1,18 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser')
+const fileupload = require('express-fileupload')
 
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true
+}))
 app.use(express.static('public'))
+app.use(fileupload())
 
 
 app.get('/',(req,res) => {
@@ -14,8 +20,7 @@ app.get('/',(req,res) => {
 })
 
 app.post('/fileUpload',(req,res) => {
-    console.log(req[1])
-    console.log('recieved!')
+    console.log(req.files)
 })
 
 app.listen(port,() => {

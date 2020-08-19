@@ -10,9 +10,9 @@ $( document ).ready(function() {
         let size = $('#asciiSize').val();
         
         if (file){
-            const formData = new FormData
-            formData.append('fileInput',file)
-            formData.append('asciiSize',size)
+            const formData = new FormData();
+            formData.append('fileInput',file);
+            formData.append('asciiSize',size);
 
             fetch('/fileUpload', {
                 method: 'POST',
