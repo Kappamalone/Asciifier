@@ -20,7 +20,13 @@ app.get('/',(req,res) => {
 })
 
 app.post('/fileUpload',(req,res) => {
-    console.log(req.files)
+    const image = req.files.fileInput
+    const fileName = req.files.fileInput.name
+    const filePath = path.join(__dirname,'pythonFiles',fileName)
+    
+    image.mv(filePath, (error) => {
+        if (error) throw error
+    })
 })
 
 app.listen(port,() => {
