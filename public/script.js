@@ -10,10 +10,9 @@ $( document ).ready(function() {
     $('#fileSubmit').click(() => {
         let file = $('#fileInput').prop('files')[0];
         let size = $('#asciiSize').val();
-        
         if (file){
             const formData = new FormData();
-            formData.append('fileInput',file);
+            formData.append('fileInput',file,file.name);
             formData.append('asciiSize',size);
 
             imageRequest = fetch('/fileUpload', {
