@@ -1,4 +1,6 @@
 $( document ).ready(function() {
+
+    //Changes text of label
     $('#fileInput').on('change',function() {
         var fileName = $(this).val().split('\\').pop();
         //replace the "Choose a file" label
@@ -14,11 +16,12 @@ $( document ).ready(function() {
             formData.append('fileInput',file);
             formData.append('asciiSize',size);
 
-            fetch('/fileUpload', {
+            imageRequest = fetch('/fileUpload', {
                 method: 'POST',
                 body: formData
-            })
-            .catch(error => {
+            }).then(response => {
+                console.log(response.ok)
+            }).catch(error => {
                 console.error(error)
             })
         }

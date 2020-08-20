@@ -1,4 +1,5 @@
 from PIL import Image
+import os
 import sys
 
 def returnAscii(brightness):
@@ -72,9 +73,10 @@ def main(img, size):
             arrayOfAscii[y][x] = returnAscii(brightness)
 
     #output values to txt file
-    with open('output.txt','w+') as outfile:
+    with open(os.path.join('pythonFiles','output.txt'),'w+') as outfile:
         for row in arrayOfAscii:
             outfile.write(''.join(row)+'\n')
 
 if __name__ == '__main__':
     main(sys.argv[1],sys.argv[2])
+    print('executed successfully')
