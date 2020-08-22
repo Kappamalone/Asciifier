@@ -15,11 +15,14 @@ $( document ).ready(function() {
             formData.append('fileInput',file,file.name);
             formData.append('asciiSize',size);
 
-            imageRequest = fetch('/fileUpload', {
+            imagePostRequest = fetch('/fileUpload', {
                 method: 'POST',
                 body: formData
             }).then(response => {
-                console.log(response.ok)
+                if (response.ok){
+                    //imageGetRequest = fetch('/fileDownload')
+                    window.open('/fileDownload')
+                }
             }).catch(error => {
                 console.error(error)
             })

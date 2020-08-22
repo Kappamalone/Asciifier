@@ -2,11 +2,13 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser')
 const fileupload = require('express-fileupload')
+let fs = require('fs')
 let {PythonShell} = require('python-shell');
-const { promises } = require('fs');
 
 const app = express();
 const port = 3000;
+
+global.fileName;
 
 //setting up middleware
 app.use(bodyParser.json({limit: '50mb'}));
@@ -25,10 +27,9 @@ app.get('/',(req,res) => {
 //handling POSTS with image files
 app.post('/fileUpload',(req,res) => {
     //beware of the difference between .files and .body
-
     const image = req.files.fileInput;
     const asciiSize = req.body.asciiSize;
-    const fileName = req.files.fileInput.name;
+    fileName = req.files.fileInput.name;
     const filePath = path.join(__dirname,'pythonFiles',fileName);
     
     //attempts to save image
@@ -36,6 +37,7 @@ app.post('/fileUpload',(req,res) => {
         if (error){
             console.log(error);
             res.sendStatus(500)
+            res.end()
         }
     })
 
@@ -47,11 +49,10 @@ app.post('/fileUpload',(req,res) => {
             const pythonExecute = PythonShell.run(pythonScript,options,(error,results) => {
                 if (error) {
                     console.log(error)
-                    res.sendStatus(500);
                     reject(error);
                 }
                 console.log('Executing python script');
-                resolve(results[0]);
+                resolve(results);
             })
         })
     }
@@ -59,27 +60,29 @@ app.post('/fileUpload',(req,res) => {
     async function sendAscii(){
         try {
             executePromise = await runPythonScript();
-            console.log('sending!');
+            fs.unlinkSync(filePath)
+            console.log('sending! and deleting file');
 
-            if (executePromise == '1') {
-                let output = path.join(__dirname,'pythonFiles','output.txt')
-                res.download(output,'ascii.txt',(err) => {
-                    if (err){
-                        console.log(err);
-                    } else {
-                        console.log('sent!!!!!!!!!!');
-                    }
-                })
-                res.sendStatus(200);
+            if (executePromise) {
+                res.sendStatus(200)
                 console.log('status sent');
+            } else {
+                console.log('we screwed tonight bois')
             }
         } catch (err) {
+            res.sendStatus(500)
             console.log(err)
         };
     }
 
-    //return the output.txt file to the user
+    //return the output.txt file to the user and delete image
     sendAscii()
+})
+
+app.get('/fileDownload',(req,res) => {
+    let output = path.join(__dirname,'pythonFiles','output.txt')
+    fileName = fileName.replace(/\.[^/.]+$/, ".txt")
+    res.download(output,fileName)
 })
 
 app.listen(port,() => {
