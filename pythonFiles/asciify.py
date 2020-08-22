@@ -76,7 +76,8 @@ def main(img, size):
     with open(os.path.join('pythonFiles','output.txt'),'w+') as outfile:
         for row in arrayOfAscii:
             outfile.write(''.join(row)+'\n')
+    
+    print('1')
 
 if __name__ == '__main__':
     main(sys.argv[1],sys.argv[2])
-    print('python script executed successfully')
